@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Gestão Condo Morador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f0f4f8;
+  --card:#ffffff;
+  --primary:#0d4f4f;
+  --accent:#00b894;
+  --accent2:#fd9644;
+  --danger:#e74c3c;
+  --text:#1a2e3b;
+  --muted:#6b7f8e;
+  --border:#dce8e8;
+  --gold:#f4a821;
+  --purple:#6c5ce7;
+  --blue:#2980b9;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:80px}
+
+/* Login */
+.login-bg{min-height:100vh;background:linear-gradient(160deg,#0a3a3a 0%,#0d4f4f 40%,#1a6b5a 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:400px;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:28px;padding:36px 28px}
+.login-logo{width:64px;height:64px;border-radius:18px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;box-shadow:0 8px 24px rgba(0,184,148,0.4)}
+.login-title{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:#fff;text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:rgba(255,255,255,0.55);text-align:center;margin-bottom:28px}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.login-field input{width:100%;padding:12px 16px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s}
+.login-field input::placeholder{color:rgba(255,255,255,0.3)}
+.login-field input:focus{border-color:var(--accent)}
+.btn-login{width:100%;padding:14px;border-radius:14px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:opacity 0.2s}
+.btn-login:disabled{opacity:0.6}
+.login-forgot{text-align:center;margin-top:16px}
+.login-forgot button{background:none;border:none;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.login-forgot button:hover{color:var(--accent)}
+.login-alert{padding:12px 16px;border-radius:12px;font-size:13px;font-weight:500;margin-bottom:16px}
+.login-alert.err{background:rgba(231,76,60,0.2);color:#ff8585;border:1px solid rgba(231,76,60,0.3)}
+.login-alert.ok{background:rgba(0,184,148,0.2);color:#00d4a0;border:1px solid rgba(0,184,148,0.3)}
+
+/* Header */
+.header{padding:16px 20px 12px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:40;box-shadow:0 2px 8px rgba(13,79,79,0.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-avatar{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.header-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.2}
+.header-role{font-size:11px;color:var(--muted)}
+.header-condo{font-size:11px;font-weight:600;color:var(--accent);background:rgba(0,184,148,0.1);padding:2px 8px;border-radius:20px}
+.btn-logout{background:none;border:none;cursor:pointer;color:var(--muted);font-size:22px;padding:4px}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50;box-shadow:0 -4px 20px rgba(13,79,79,0.08)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:all 0.2s;background:none;border:none;font-family:'DM Sans',sans-serif}
+.nav-icon{font-size:20px;line-height:1}
+.nav-label{font-size:10px;font-weight:600;color:var(--muted);transition:color 0.2s}
+.nav-item.active .nav-label{color:var(--primary)}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);margin-top:1px}
+
+/* Content */
+.content{padding:16px}
+.screen-title{font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.screen-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+
+/* Cards */
+.card{background:var(--card);border-radius:20px;padding:20px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(13,79,79,0.04)}
+.card-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px}
+.card-accent{border-left:4px solid var(--accent)}
+.card-gold{border-left:4px solid var(--gold)}
+.card-danger{border-left:4px solid var(--danger)}
+.card-purple{border-left:4px solid var(--purple)}
+
+/* Mural */
+.aviso-card{background:var(--card);border-radius:18px;padding:18px;margin-bottom:12px;border:1px solid var(--border);position:relative;overflow:hidden}
+.aviso-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.aviso-card.urgente::before{background:var(--danger)}
+.aviso-card.aviso::before{background:var(--gold)}
+.aviso-card.informativo::before{background:var(--blue)}
+.aviso-card.evento::before{background:var(--purple)}
+.aviso-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.aviso-titulo{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;font-family:'Fraunces',serif}
+.aviso-texto{font-size:13px;color:var(--muted);line-height:1.5}
+.aviso-data{font-size:11px;color:var(--muted);margin-top:10px}
+
+/* Greeting */
+.greeting-card{background:linear-gradient(135deg,var(--primary) 0%,#1a6b5a 100%);border-radius:22px;padding:24px 20px;margin-bottom:20px;color:white;position:relative;overflow:hidden}
+.greeting-card::after{content:'🏢';position:absolute;right:-10px;bottom:-20px;font-size:100px;opacity:0.07}
+.greeting-date{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px}
+.greeting-name{font-family:'Fraunces',serif;font-size:24px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.greeting-condo{font-size:13px;color:rgba(255,255,255,0.7)}
+.greeting-badge{display:inline-block;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;margin-top:10px}
+
+/* List items */
+.list-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border-radius:16px;margin-bottom:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.list-item:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(0,184,148,0.1)}
+.list-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.list-info{flex:1}
+.list-title{font-size:14px;font-weight:700;color:var(--text)}
+.list-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.list-right{font-size:12px;color:var(--muted);flex-shrink:0}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(0,184,148,0.15);color:#00856a}
+.badge-red{background:rgba(231,76,60,0.12);color:#c0392b}
+.badge-gold{background:rgba(244,168,33,0.15);color:#b7770a}
+.badge-blue{background:rgba(41,128,185,0.12);color:#1a5e8a}
+.badge-purple{background:rgba(108,92,231,0.12);color:#5641c4}
+.badge-gray{background:#f1f5f9;color:var(--muted)}
+
+/* Buttons */
+.btn{padding:10px 18px;border-radius:14px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-primary{background:var(--primary);color:white}
+.btn-accent{background:var(--accent);color:white}
+.btn-ghost{background:#f1f5f9;color:var(--text)}
+.btn-danger{background:var(--danger);color:white}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:10px}
+.btn-full{width:100%;padding:14px}
+.fab{position:fixed;bottom:90px;right:20px;width:54px;height:54px;border-radius:18px;background:var(--primary);color:white;border:none;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(13,79,79,0.35);z-index:45;transition:transform 0.2s}
+.fab:active{transform:scale(0.95)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,30,30,0.65);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.modal-box{width:100%;max-width:480px;background:var(--card);border-radius:24px 24px 0 0;padding:0;max-height:92dvh;display:flex;flex-direction:column}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:12px auto 0}
+.modal-head{padding:16px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--primary)}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:16px 20px;overflow-y:auto;flex:1}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px;background:var(--card)}
+
+/* Form */
+.form-field{margin-bottom:16px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.form-input{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:white}
+.form-input:focus{border-color:var(--accent)}
+.form-input.error{border-color:var(--danger)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f8e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-err{font-size:12px;color:var(--danger);margin-top:4px}
+.form-check{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);transition:border-color 0.2s}
+.form-check.checked{border-color:var(--accent);background:rgba(0,184,148,0.05)}
+.form-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:var(--card);border-radius:16px;padding:14px 12px;text-align:center;border:1px solid var(--border)}
+.stat-val{font-family:'Fraunces',serif;font-size:24px;font-weight:800;color:var(--primary)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
+.cal-head{font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
+.cal-day{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent}
+.cal-day.today{background:rgba(0,184,148,0.15);color:var(--accent);border-color:var(--accent)}
+.cal-day.reservado{background:rgba(231,76,60,0.1);color:var(--danger)}
+.cal-day.selected{background:var(--primary);color:white}
+.cal-day.empty{cursor:default}
+.cal-day:hover:not(.empty){border-color:var(--accent)}
+
+/* Tabs */
+.tab-bar{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;transition:all 0.2s}
+.tab-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+
+/* Porteiro status */
+.status-bar{display:flex;gap:8px;padding:12px 16px;background:var(--card);border-radius:16px;margin-bottom:16px;border:1px solid var(--border);align-items:center}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-dot.online{background:var(--accent);box-shadow:0 0 0 3px rgba(0,184,148,0.2)}
+.status-txt{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.status-time{font-size:12px;color:var(--muted)}
+
+/* Empty state */
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:13px}
+
+/* Alerts */
+.alert{padding:12px 16px;border-radius:14px;font-size:13px;font-weight:500;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.alert.info{background:rgba(41,128,185,0.1);color:#1a5e8a;border:1px solid rgba(41,128,185,0.2)}
+.alert.success{background:rgba(0,184,148,0.1);color:#00856a;border:1px solid rgba(0,184,148,0.2)}
+.alert.warning{background:rgba(244,168,33,0.1);color:#b7770a;border:1px solid rgba(244,168,33,0.2)}
+.alert.danger{background:rgba(231,76,60,0.1);color:#c0392b;border:1px solid rgba(231,76,60,0.2)}
+
+/* Spinner */
+.spinner{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+
+/* Toggle */
+.toggle-group{display:flex;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);background:var(--bg)}
+.toggle-opt{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);transition:all 0.2s;border:none;font-family:'DM Sans',sans-serif;background:transparent}
+.toggle-opt.active{background:var(--primary);color:white}
+
+/* Admin panel styles */
+.admin-card{background:var(--card);border-radius:20px;padding:0;margin-bottom:14px;border:1px solid var(--border);overflow:hidden}
+.admin-card-head{padding:14px 18px;background:linear-gradient(135deg,var(--primary),#1a6b5a);color:white;display:flex;align-items:center;justify-content:space-between}
+.admin-card-body{padding:16px 18px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const {useState, useEffect, useCallback, useMemo} = React;
+const SUPABASE_URL = 'https://bfclbnpnvtsptnxtmbgm.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmY2xibnBudnRzcHRueHRtYmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1MzI0OTIsImV4cCI6MjA1OTEwODQ5Mn0.O7aVhMBhFgRpCoR_oHBM5I-lxlN-GXhFVf38hk3VNRY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const ADMIN_EMAIL = 'caciotrajano@hotmail.com';
+
+// ── DB helpers ────────────────────────────────────────────────────────────────
+const db = {
+  // Síndicos
+  getSindicos:    ()    => sb.from('gc_sindicos').select('*').order('nome'),
+  addSindico:     d     => sb.from('gc_sindicos').insert(d).select().single(),
+  updSindico:     (id,d)=> sb.from('gc_sindicos').update(d).eq('id',id).select().single(),
+  delSindico:     id    => sb.from('gc_sindicos').delete().eq('id',id),
+  getMySindico:   (uid) => sb.from('gc_sindicos').select('*').eq('owner_id',uid).single(),
+  // Condomínios
+  getCondos:      ()    => sb.from('gc_condominios').select('*,gc_sindicos(nome)').order('nome'),
+  getCondosBySind:(sid) => sb.from('gc_condominios').select('*').eq('sindico_id',sid).order('nome'),
+  addCondo:       d     => sb.from('gc_condominios').insert(d).select().single(),
+  updCondo:       (id,d)=> sb.from('gc_condominios').update(d).eq('id',id).select().single(),
+  delCondo:       id    => sb.from('gc_condominios').delete().eq('id',id),
+  // Unidades
+  getUnidades:    (cid) => sb.from('gc_unidades').select('*').eq('condo_id',cid).order('bloco,numero'),
+  addUnidade:     d     => sb.from('gc_unidades').insert(d).select().single(),
+  updUnidade:     (id,d)=> sb.from('gc_unidades').update(d).eq('id',id),
+  delUnidade:     id    => sb.from('gc_unidades').delete().eq('id',id),
+  // Moradores
+  getMoradores:   (cid) => sb.from('gc_moradores').select('*,gc_unidades(numero,bloco)').eq('condo_id',cid).order('nome'),
+  getMyMorador:   (uid) => sb.from('gc_moradores').select('*,gc_unidades(*),gc_condominios(nome)').eq('owner_id',uid).single(),
+  addMorador:     d     => sb.from('gc_moradores').insert(d).select().single(),
+  updMorador:     (id,d)=> sb.from('gc_moradores').update(d).eq('id',id).select().single(),
+  delMorador:     id    => sb.from('gc_moradores').delete().eq('id',id),
+  // Proprietários
+  getProprietario:(mid) => sb.from('gc_proprietarios').select('*').eq('morador_id',mid).single(),
+  upsertProp:     d     => sb.from('gc_proprietarios').upsert(d,{onConflict:'morador_id'}).select().single(),
+  // Imobiliárias
+  getImob:        (uid) => sb.from('gc_imobiliarias').select('*').eq('unidade_id',uid).single(),
+  upsertImob:     d     => sb.from('gc_imobiliarias').upsert(d,{onConflict:'unidade_id'}).select().single(),
+  delImob:        id    => sb.from('gc_imobiliarias').delete().eq('id',id),
+  // Porteiros
+  getPorteiros:   (cid) => sb.from('gc_porteiros').select('*').eq('condo_id',cid).order('nome'),
+  getMyPorteiro:  (uid) => sb.from('gc_porteiros').select('*,gc_condominios(nome)').eq('owner_id',uid).single(),
+  addPorteiro:    d     => sb.from('gc_porteiros').insert(d).select().single(),
+  updPorteiro:    (id,d)=> sb.from('gc_porteiros').update(d).eq('id',id),
+  delPorteiro:    id    => sb.from('gc_porteiros').delete().eq('id',id),
+  // Áreas Comuns
+  getAreas:       (cid) => sb.from('gc_areas_comuns').select('*').eq('condo_id',cid).order('nome'),
+  addArea:        d     => sb.from('gc_areas_comuns').insert(d).select().single(),
+  updArea:        (id,d)=> sb.from('gc_areas_comuns').update(d).eq('id',id).select().single(),
+  delArea:        id    => sb.from('gc_areas_comuns').delete().eq('id',id),
+  // Reservas
+  getReservas:    (cid) => sb.from('gc_reservas').select('*,gc_areas_comuns(nome),gc_moradores(nome),gc_unidades(numero,bloco)').eq('condo_id',cid).order('data,hora_inicio'),
+  getReservasByMor:(mid)=> sb.from('gc_reservas').select('*,gc_areas_comuns(nome)').eq('morador_id',mid).gte('data',new Date().toISOString().slice(0,10)).order('data'),
+  getReservasByArea:(aid,d)=> sb.from('gc_reservas').select('*,gc_moradores(nome)').eq('area_id',aid).eq('data',d).neq('status','cancelada'),
+  addReserva:     d     => sb.from('gc_reservas').insert(d).select().single(),
+  updReserva:     (id,d)=> sb.from('gc_reservas').update(d).eq('id',id),
+  delReserva:     id    => sb.from('gc_reservas').delete().eq('id',id),
+  // Avisos
+  getAvisos:      (cid) => sb.from('gc_avisos').select('*').eq('condo_id',cid).eq('ativo',true).order('fixado',{ascending:false}).order('created_at',{ascending:false}),
+  addAviso:       d     => sb.from('gc_avisos').insert(d).select().single(),
+  updAviso:       (id,d)=> sb.from('gc_avisos').update(d).eq('id',id).select().single(),
+  delAviso:       id    => sb.from('gc_avisos').delete().eq('id',id),
+  // Visitantes
+  getVisitantes:  (cid,d)=> sb.from('gc_visitantes').select('*,gc_moradores(nome),gc_unidades(numero,bloco),gc_areas_comuns(nome)').eq('condo_id',cid).eq('data',d).order('created_at'),
+  getVisitsByMor: (mid) => sb.from('gc_visitantes').select('*,gc_areas_comuns(nome)').eq('morador_id',mid).gte('data',new Date().toISOString().slice(0,10)).order('data'),
+  addVisitante:   d     => sb.from('gc_visitantes').insert(d).select().single(),
+  updVisitante:   (id,d)=> sb.from('gc_visitantes').update(d).eq('id',id).select().single(),
+  // Entregas
+  getEntregas:    (cid) => sb.from('gc_entregas').select('*,gc_moradores(nome),gc_unidades(numero,bloco)').eq('condo_id',cid).order('data_esperada'),
+  getEntregasByMor:(mid)=> sb.from('gc_entregas').select('*').eq('morador_id',mid).order('data_esperada',{ascending:false}),
+  addEntrega:     d     => sb.from('gc_entregas').insert(d).select().single(),
+  updEntrega:     (id,d)=> sb.from('gc_entregas').update(d).eq('id',id).select().single(),
+  // Achados e perdidos
+  getAchados:     (cid) => sb.from('gc_achados_perdidos').select('*,gc_porteiros(nome)').eq('condo_id',cid).order('created_at',{ascending:false}),
+  addAchado:      d     => sb.from('gc_achados_perdidos').insert(d).select().single(),
+  updAchado:      (id,d)=> sb.from('gc_achados_perdidos').update(d).eq('id',id).select().single(),
+  // Documentos
+  getDocs:        (cid) => sb.from('gc_documentos').select('*').eq('condo_id',cid).order('tipo,titulo'),
+  addDoc:         d     => sb.from('gc_documentos').insert(d).select().single(),
+  updDoc:         (id,d)=> sb.from('gc_documentos').update(d).eq('id',id),
+  delDoc:         id    => sb.from('gc_documentos').delete().eq('id',id),
+};
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+const fmtDate = d => d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR') : '';
+const today   = () => new Date().toISOString().slice(0,10);
+const nowTime = () => new Date().toTimeString().slice(0,5);
+const DIAS    = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES   = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const greet   = () => { const h=new Date().getHours(); return h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'; };
+
+// ── Modal helper ──────────────────────────────────────────────────────────────
+function Modal({title, onClose, children, footer, wide}) {
+  return React.createElement('div',{className:'modal-overlay',onClick:onClose}
+    ,React.createElement('div',{className:'modal-box',onClick:e=>e.stopPropagation(),style:wide?{maxWidth:540}:{}}
+      ,React.createElement('div',{className:'modal-handle'})
+      ,React.createElement('div',{className:'modal-head'}
+        ,React.createElement('span',{className:'modal-title'},title)
+        ,React.createElement('button',{className:'modal-close',onClick:onClose},'×')
+      )
+      ,React.createElement('div',{className:'modal-body'},children)
+      ,footer&&React.createElement('div',{className:'modal-foot'},footer)
+    )
+  );
+}
+
+// ── LoginScreen ───────────────────────────────────────────────────────────────
+function LoginScreen({onLogin}) {
+  const [email,   setEmail]   = useState('');
+  const [senha,   setSenha]   = useState('');
+  const [loading, setLoading] = useState(false);
+  const [msg,     setMsg]     = useState(null);
+  const [forgot,  setForgot]  = useState(false);
+
+  const login = async() => {
+    if(!email||!senha) return setMsg({t:'Preencha e-mail e senha.',e:true});
+    setLoading(true);setMsg(null);
+    const {data,error}=await sb.auth.signInWithPassword({email,password:senha});
+    if(error){setMsg({t:'E-mail ou senha incorretos.',e:true});setLoading(false);return;}
+    onLogin(data.user);
+  };
+
+  const recover = async() => {
+    if(!email) return setMsg({t:'Informe seu e-mail.',e:true});
+    setLoading(true);setMsg(null);
+    const redirectTo = window.location.origin+window.location.pathname;
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});
+    setLoading(false);
+    if(error) setMsg({t:'Erro: '+error.message,e:true});
+    else setMsg({t:'Link de recuperação enviado! Verifique seu e-mail.',e:false});
+    setForgot(false);
+  };
+
+  return React.createElement('div',{className:'login-bg'}
+    ,React.createElement('div',{className:'login-card'}
+      ,React.createElement('div',{className:'login-logo'},'🏢')
+      ,React.createElement('h1',{className:'login-title'},'Gestão Condo')
+      ,React.createElement('p',{className:'login-sub'},'Morador · Síndico · Porteiro')
+      ,msg&&React.createElement('div',{className:'login-alert '+(msg.e?'err':'ok')},msg.t)
+      ,React.createElement('div',{className:'login-field'}
+        ,React.createElement('label',null,'E-mail')
+        ,React.createElement('input',{type:'email',placeholder:'seu@email.com',value:email,
+            onChange:e=>setEmail(e.target.value),onKeyDown:e=>e.key==='Enter'&&(forgot?recover():login())})
+      )
+      ,!forgot&&React.createElement('div',{className:'login-field'}
+        ,React.createElement('label',null,'Senha')
+        ,React.createElement('input',{type:'password',placeholder:'••••••••',value:senha,
+            onChange:e=>setSenha(e.target.value),onKeyDown:e=>e.key==='Enter'&&login()})
+      )
+      ,React.createElement('button',{className:'btn-login',disabled:loading,
+          onClick:forgot?recover:login},
+          loading?'Aguarde...':(forgot?'Enviar link de recuperação':'Entrar'))
+      ,React.createElement('div',{className:'login-forgot'}
+        ,React.createElement('button',{onClick:()=>{setForgot(!forgot);setMsg(null)}},
+            forgot?'← Voltar ao login':'Esqueci minha senha')
+      )
+    )
+  );
+}
+
+// ── Admin Module ──────────────────────────────────────────────────────────────
+function AdminApp({user}) {
+  const [tab,     setTab]     = useState('sindicos');
+  const [sindicos,setSindicos]= useState([]);
+  const [condos,  setCondos]  = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal,   setModal]   = useState(null);
+  const [form,    setForm]    = useState({});
+  const [saving,  setSaving]  = useState(false);
+
+  useEffect(()=>{
+    Promise.all([db.getSindicos(), db.getCondos()]).then(([s,c])=>{
+      setSindicos(s.data||[]);setCondos(c.data||[]);setLoading(false);
+    });
+  },[]);
+
+  const openModal = (type, item={}) => { setForm(item); setModal(type); };
+
+  const saveSindico = async() => {
+    if(!form.nome||!form.email) return;
+    setSaving(true);
+    const payload={nome:form.nome,cpf:form.cpf||null,telefone:form.telefone||null,email:form.email,endereco:form.endereco||null,ativo:true};
+    if(form.id){
+      const {data}=await db.updSindico(form.id,payload);
+      if(data) setSindicos(p=>p.map(x=>x.id===form.id?data:x));
+    } else {
+      const {data}=await db.addSindico(payload);
+      if(data) setSindicos(p=>[data,...p]);
+    }
+    setSaving(false);setModal(null);
+  };
+
+  const delSindico = async(id)=>{
+    if(!confirm('Excluir este síndico?')) return;
+    await db.delSindico(id);setSindicos(p=>p.filter(x=>x.id!==id));
+  };
+
+  const saveCondo = async()=>{
+    if(!form.nome||!form.sindico_id) return;
+    setSaving(true);
+    const payload={nome:form.nome,endereco:form.endereco||null,cidade:form.cidade||null,sindico_id:form.sindico_id,ativo:true};
+    if(form.id){
+      const {data}=await db.updCondo(form.id,payload);
+      if(data) setCondos(p=>p.map(x=>x.id===form.id?{...data,gc_sindicos:x.gc_sindicos}:x));
+    } else {
+      const {data}=await db.addCondo(payload);
+      if(data){ const sind=sindicos.find(s=>s.id===form.sindico_id); setCondos(p=>[{...data,gc_sindicos:sind?{nome:sind.nome}:null},...p]); }
+    }
+    setSaving(false);setModal(null);
+  };
+
+  const delCondo=async(id)=>{
+    if(!confirm('Excluir este condomínio?')) return;
+    await db.delCondo(id);setCondos(p=>p.filter(x=>x.id!==id));
+  };
+
+  if(loading) return React.createElement('div',{className:'spinner'},'⏳ Carregando...');
+
+  return React.createElement('div',{className:'app'}
+    ,React.createElement('div',{className:'header'}
+      ,React.createElement('div',{className:'header-inner'}
+        ,React.createElement('div',{className:'header-left'}
+          ,React.createElement('div',{className:'header-avatar',style:{background:'#0d4f4f',color:'#00b894'}},'⚙️')
+          ,React.createElement('div',null
+            ,React.createElement('div',{className:'header-name'},'Administrador')
+            ,React.createElement('div',{className:'header-role'},user.email)
+          )
+        )
+        ,React.createElement('button',{className:'btn-logout',onClick:()=>sb.auth.signOut()},'🚪')
+      )
+    )
+    ,React.createElement('div',{className:'content'}
+      ,React.createElement('div',{className:'tab-bar'}
+        ,['sindicos','condos'].map(t=>
+          React.createElement('button',{key:t,className:'tab-btn'+(tab===t?' active':''),onClick:()=>setTab(t)},
+            t==='sindicos'?'👤 Síndicos':'🏢 Condomínios'))
+      )
+
+      // ── Síndicos ──
+      ,tab==='sindicos'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Síndicos')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>openModal('sindico')},'+ Novo')
+        )
+        ,sindicos.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'👤')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum síndico cadastrado')
+        )
+        ,sindicos.map(s=>React.createElement('div',{key:s.id,className:'list-item'}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(13,79,79,0.1)'}},'👤')
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},s.nome)
+            ,React.createElement('div',{className:'list-sub'},s.email,' · ',s.telefone||'')
+          )
+          ,React.createElement('div',{style:{display:'flex',gap:6}}
+            ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>openModal('sindico',s)},'✏️')
+            ,React.createElement('button',{className:'btn btn-danger btn-sm',onClick:()=>delSindico(s.id)},'🗑️')
+          )
+        ))
+      )
+
+      // ── Condomínios ──
+      ,tab==='condos'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Condomínios')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>openModal('condo')},'+ Novo')
+        )
+        ,condos.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🏢')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum condomínio cadastrado')
+        )
+        ,condos.map(cd=>React.createElement('div',{key:cd.id,className:'list-item'}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(0,184,148,0.1)'}},'🏢')
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},cd.nome)
+            ,React.createElement('div',{className:'list-sub'},cd.gc_sindicos?.nome||'Sem síndico',' · ',cd.cidade||cd.endereco||'')
+          )
+          ,React.createElement('div',{style:{display:'flex',gap:6}}
+            ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>openModal('condo',{...cd,sindico_id:cd.sindico_id})},'✏️')
+            ,React.createElement('button',{className:'btn btn-danger btn-sm',onClick:()=>delCondo(cd.id)},'🗑️')
+          )
+        ))
+      )
+    )
+
+    // Modal Síndico
+    ,modal==='sindico'&&React.createElement(Modal,{title:form.id?'Editar Síndico':'Novo Síndico',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveSindico},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',{className:'form-row'}
+        ,React.createElement('div',{className:'form-field',style:{gridColumn:'1/-1'}}
+          ,React.createElement('label',{className:'form-label'},'Nome *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',placeholder:'Nome completo',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'CPF')
+          ,React.createElement('input',{className:'form-input',value:form.cpf||'',placeholder:'000.000.000-00',onChange:e=>setForm(p=>({...p,cpf:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Telefone')
+          ,React.createElement('input',{className:'form-input',value:form.telefone||'',placeholder:'(85) 99999-9999',onChange:e=>setForm(p=>({...p,telefone:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field',style:{gridColumn:'1/-1'}}
+          ,React.createElement('label',{className:'form-label'},'E-mail *')
+          ,React.createElement('input',{className:'form-input',type:'email',value:form.email||'',placeholder:'sindico@email.com',onChange:e=>setForm(p=>({...p,email:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field',style:{gridColumn:'1/-1'}}
+          ,React.createElement('label',{className:'form-label'},'Endereço')
+          ,React.createElement('input',{className:'form-input',value:form.endereco||'',placeholder:'Rua, número, bairro',onChange:e=>setForm(p=>({...p,endereco:e.target.value}))})
+        )
+      )
+    )
+
+    // Modal Condomínio
+    ,modal==='condo'&&React.createElement(Modal,{title:form.id?'Editar Condomínio':'Novo Condomínio',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveCondo},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Nome do Condomínio *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',placeholder:'Residencial Exemplo',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Síndico *')
+          ,React.createElement('select',{className:'form-input form-select',value:form.sindico_id||'',onChange:e=>setForm(p=>({...p,sindico_id:e.target.value}))}
+            ,React.createElement('option',{value:''},'Selecione...')
+            ,sindicos.map(s=>React.createElement('option',{key:s.id,value:s.id},s.nome))
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Endereço')
+          ,React.createElement('input',{className:'form-input',value:form.endereco||'',placeholder:'Rua, número',onChange:e=>setForm(p=>({...p,endereco:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Cidade')
+          ,React.createElement('input',{className:'form-input',value:form.cidade||'',placeholder:'Fortaleza, CE',onChange:e=>setForm(p=>({...p,cidade:e.target.value}))})
+        )
+      )
+    )
+  );
+}
+
+// ── Síndico App ───────────────────────────────────────────────────────────────
+function SindicoApp({user, sindico}) {
+  const [tab,      setTab]      = useState('moradores');
+  const [condos,   setCondos]   = useState([]);
+  const [condoSel, setCondoSel] = useState(null);
+  const [moradores,setMoradores]= useState([]);
+  const [unidades, setUnidades] = useState([]);
+  const [areas,    setAreas]    = useState([]);
+  const [reservas, setReservas] = useState([]);
+  const [porteiros,setPorteiros]= useState([]);
+  const [avisos,   setAvisos]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [modal,    setModal]    = useState(null);
+  const [form,     setForm]     = useState({});
+  const [formProp, setFormProp] = useState({});
+  const [formImob, setFormImob] = useState({});
+  const [showImob, setShowImob] = useState(false);
+  const [saving,   setSaving]   = useState(false);
+
+  useEffect(()=>{
+    db.getCondosBySind(sindico.id).then(({data})=>{
+      const list=data||[];
+      setCondos(list);
+      if(list.length>0) loadCondo(list[0]);
+      else setLoading(false);
+    });
+  },[]);
+
+  const loadCondo = async(cd) => {
+    setCondoSel(cd);setLoading(true);
+    const [m,u,a,r,p,av]=await Promise.all([
+      db.getMoradores(cd.id),db.getUnidades(cd.id),db.getAreas(cd.id),
+      db.getReservas(cd.id),db.getPorteiros(cd.id),db.getAvisos(cd.id)]);
+    setMoradores(m.data||[]);setUnidades(u.data||[]);setAreas(a.data||[]);
+    setReservas(r.data||[]);setPorteiros(p.data||[]);setAvisos(av.data||[]);
+    setLoading(false);
+  };
+
+  const openMorador = (item={}) => {
+    setForm(item);
+    if(item.id&&item.tipo==='inquilino') db.getProprietario(item.id).then(({data})=>setFormProp(data||{}));
+    else setFormProp({});
+    setFormImob({});setShowImob(false);setModal('morador');
+  };
+
+  const saveMorador = async() => {
+    if(!form.nome) return;
+    setSaving(true);
+    const payload={nome:form.nome,email:form.email||null,telefone:form.telefone||null,
+      tipo:form.tipo||'proprietario',condo_id:condoSel.id,unidade_id:form.unidade_id||null,ativo:true};
+    let morId=form.id;
+    if(form.id){
+      const {data}=await db.updMorador(form.id,payload);
+      if(data) setMoradores(p=>p.map(x=>x.id===form.id?data:x));
+    } else {
+      const {data}=await db.addMorador(payload);
+      if(data){setMoradores(p=>[data,...p]);morId=data.id;}
+    }
+    if(form.tipo==='inquilino'&&formProp.nome&&morId){
+      await db.upsertProp({...formProp,morador_id:morId});
+    }
+    if(showImob&&formImob.nome&&form.unidade_id){
+      await db.upsertImob({...formImob,unidade_id:form.unidade_id});
+    }
+    setSaving(false);setModal(null);
+  };
+
+  const delMorador=async(id)=>{if(!confirm('Excluir morador?'))return;await db.delMorador(id);setMoradores(p=>p.filter(x=>x.id!==id));};
+
+  const saveArea=async()=>{
+    if(!form.nome)return;setSaving(true);
+    const payload={nome:form.nome,descricao:form.descricao||null,regras:form.regras||null,
+      capacidade:Number(form.capacidade)||0,icone:form.icone||'🏢',ativa:true,condo_id:condoSel.id};
+    if(form.id){const {data}=await db.updArea(form.id,payload);if(data)setAreas(p=>p.map(x=>x.id===form.id?data:x));}
+    else{const {data}=await db.addArea(payload);if(data)setAreas(p=>[...p,data]);}
+    setSaving(false);setModal(null);
+  };
+
+  const savePorteiro=async()=>{
+    if(!form.nome||!form.email)return;setSaving(true);
+    const payload={nome:form.nome,email:form.email,condo_id:condoSel.id,ativo:true};
+    if(form.id){await db.updPorteiro(form.id,payload);setPorteiros(p=>p.map(x=>x.id===form.id?{...x,...payload}:x));}
+    else{const {data}=await db.addPorteiro(payload);if(data)setPorteiros(p=>[...p,data]);}
+    setSaving(false);setModal(null);
+  };
+
+  const saveAviso=async()=>{
+    if(!form.titulo||!form.texto)return;setSaving(true);
+    const payload={titulo:form.titulo,texto:form.texto,tipo:form.tipo||'aviso',fixado:form.fixado||false,ativo:true,condo_id:condoSel.id};
+    if(form.id){const {data}=await db.updAviso(form.id,payload);if(data)setAvisos(p=>p.map(x=>x.id===form.id?data:x));}
+    else{const {data}=await db.addAviso(payload);if(data)setAvisos(p=>[data,...p]);}
+    setSaving(false);setModal(null);
+  };
+
+  const TIPO_CORES={aviso:'#f4a821',urgente:'#e74c3c',informativo:'#2980b9',evento:'#6c5ce7'};
+  const ICONES_AREAS=['🏊','🎾','🏋️','🎉','🍖','🎮','📚','🅿️','🏢','⛲','🌳','🐕'];
+
+  if(loading) return React.createElement('div',{className:'spinner'},'⏳ Carregando...');
+
+  return React.createElement('div',{className:'app'}
+    ,React.createElement('div',{className:'header'}
+      ,React.createElement('div',{className:'header-inner'}
+        ,React.createElement('div',{className:'header-left'}
+          ,React.createElement('div',{className:'header-avatar',style:{background:'rgba(0,184,148,0.15)',color:'#00b894'}},'🏠')
+          ,React.createElement('div',null
+            ,React.createElement('div',{className:'header-name'},sindico.nome)
+            ,React.createElement('div',{className:'header-role'},'Síndico Profissional')
+          )
+        )
+        ,React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}}
+          ,condos.length>1&&React.createElement('select',{
+              style:{fontSize:12,padding:'4px 8px',borderRadius:8,border:'1px solid #dce8e8',background:'#f0f4f8',color:'#1a2e3b',cursor:'pointer'},
+              value:condoSel?.id||'',onChange:e=>loadCondo(condos.find(c=>c.id===e.target.value))}
+            ,condos.map(cd=>React.createElement('option',{key:cd.id,value:cd.id},cd.nome))
+          )
+          ,React.createElement('button',{className:'btn-logout',onClick:()=>sb.auth.signOut()},'🚪')
+        )
+      )
+      ,condoSel&&React.createElement('div',{style:{padding:'4px 20px 10px'}}
+        ,React.createElement('span',{className:'header-condo'},'🏢 '+condoSel.nome)
+      )
+    )
+
+    ,React.createElement('div',{className:'content'}
+      ,React.createElement('div',{className:'tab-bar'}
+        ,[['moradores','👥 Moradores'],['areas','🏊 Áreas'],['porteiros','👮 Porteiros'],['avisos','📢 Avisos'],['reservas','📅 Reservas']].map(([t,l])=>
+          React.createElement('button',{key:t,className:'tab-btn'+(tab===t?' active':''),onClick:()=>setTab(t)},l))
+      )
+
+      // MORADORES
+      ,tab==='moradores'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',null,React.createElement('span',{className:'screen-title'},moradores.length+' Moradores'))
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>openMorador()},'+ Novo')
+        )
+        ,moradores.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'👥')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum morador cadastrado')
+        )
+        ,moradores.map(m=>React.createElement('div',{key:m.id,className:'list-item'}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(108,92,231,0.1)'}}
+            ,m.tipo==='inquilino'?'🏠':'🔑')
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},m.nome)
+            ,React.createElement('div',{className:'list-sub'}
+              ,m.gc_unidades?'Unid. '+m.gc_unidades.numero+(m.gc_unidades.bloco?' - Bl.'+m.gc_unidades.bloco:''):''
+              ,' · '
+              ,React.createElement('span',{className:'badge '+(m.tipo==='inquilino'?'badge-blue':'badge-green')},
+                  m.tipo==='inquilino'?'Inquilino':'Proprietário')
+            )
+          )
+          ,React.createElement('div',{style:{display:'flex',gap:6}}
+            ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>openMorador(m)},'✏️')
+            ,React.createElement('button',{className:'btn btn-danger btn-sm',onClick:()=>delMorador(m.id)},'🗑️')
+          )
+        ))
+      )
+
+      // ÁREAS COMUNS
+      ,tab==='areas'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Áreas Comuns')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({icone:'🏢'});setModal('area');}},'+ Nova')
+        )
+        ,areas.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🏊')
+          ,React.createElement('div',{className:'empty-title'},'Nenhuma área cadastrada')
+        )
+        ,areas.map(a=>React.createElement('div',{key:a.id,className:'list-item'}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(0,184,148,0.1)',fontSize:22}},a.icone)
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},a.nome)
+            ,React.createElement('div',{className:'list-sub'},a.capacidade?'Capacidade: '+a.capacidade+' pessoas':'',a.ativa?'':' · Inativa')
+          )
+          ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>{setForm(a);setModal('area');}},'✏️')
+        ))
+      )
+
+      // PORTEIROS
+      ,tab==='porteiros'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Porteiros')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({});setModal('porteiro');}},'+ Novo')
+        )
+        ,porteiros.map(p=>React.createElement('div',{key:p.id,className:'list-item'}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(244,168,33,0.1)'}},'👮')
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},p.nome)
+            ,React.createElement('div',{className:'list-sub'},p.email)
+          )
+          ,React.createElement('button',{className:'btn btn-danger btn-sm',onClick:()=>{if(confirm('Excluir?'))db.delPorteiro(p.id).then(()=>setPorteiros(px=>px.filter(x=>x.id!==p.id)))}},'🗑️')
+        ))
+        ,porteiros.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'👮')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum porteiro cadastrado')
+          ,React.createElement('div',{className:'empty-sub'},'Cadastre porteiros para que eles possam acessar o sistema')
+        )
+      )
+
+      // AVISOS
+      ,tab==='avisos'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Avisos / Mural')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({tipo:'aviso'});setModal('aviso');}},'+ Novo')
+        )
+        ,avisos.map(av=>React.createElement('div',{key:av.id,className:'aviso-card '+av.tipo}
+          ,React.createElement('div',{className:'aviso-tipo',style:{color:TIPO_CORES[av.tipo]||'#666'}}
+            ,av.fixado?'📌 ':''
+            ,{aviso:'⚠️ AVISO',urgente:'🚨 URGENTE',informativo:'ℹ️ INFORMATIVO',evento:'🎉 EVENTO'}[av.tipo]||av.tipo.toUpperCase())
+          ,React.createElement('div',{className:'aviso-titulo'},av.titulo)
+          ,React.createElement('div',{className:'aviso-texto'},av.texto)
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:10}}
+            ,React.createElement('span',{className:'aviso-data'},fmtDate(av.created_at?.slice(0,10)))
+            ,React.createElement('div',{style:{display:'flex',gap:6}}
+              ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>{setForm(av);setModal('aviso');}},'✏️')
+              ,React.createElement('button',{className:'btn btn-danger btn-sm',onClick:()=>{if(confirm('Excluir aviso?'))db.delAviso(av.id).then(()=>setAvisos(p=>p.filter(x=>x.id!==av.id)))}},'🗑️')
+            )
+          )
+        ))
+        ,avisos.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'📢')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum aviso publicado')
+        )
+      )
+
+      // RESERVAS
+      ,tab==='reservas'&&React.createElement('div',null
+        ,React.createElement('div',{className:'screen-title'},'Reservas')
+        ,reservas.filter(r=>r.status!=='cancelada'&&r.data>=today()).length===0
+          ?React.createElement('div',{className:'empty'}
+            ,React.createElement('div',{className:'empty-icon'},'📅')
+            ,React.createElement('div',{className:'empty-title'},'Nenhuma reserva futura')
+          )
+          :reservas.filter(r=>r.status!=='cancelada'&&r.data>=today()).map(r=>
+            React.createElement('div',{key:r.id,className:'card card-accent'}
+              ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}
+                ,React.createElement('div',null
+                  ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},r.gc_areas_comuns?.nome)
+                  ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginTop:4}},r.gc_moradores?.nome,' · Unid. ',r.gc_unidades?.numero)
+                  ,React.createElement('div',{style:{fontSize:12,color:'#6b7f8e',marginTop:2}},fmtDate(r.data),' · ',r.hora_inicio,'–',r.hora_fim)
+                )
+                ,React.createElement('button',{className:'btn btn-danger btn-sm',
+                    onClick:()=>{if(confirm('Cancelar reserva?'))db.updReserva(r.id,{status:'cancelada'}).then(()=>setReservas(p=>p.map(x=>x.id===r.id?{...x,status:'cancelada'}:x)))}},'Cancelar')
+              )
+            ))
+      )
+    )
+
+    // MODAL MORADOR
+    ,modal==='morador'&&React.createElement(Modal,{title:form.id?'Editar Morador':'Novo Morador',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveMorador},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Nome *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',placeholder:'Nome completo',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'E-mail')
+            ,React.createElement('input',{className:'form-input',type:'email',value:form.email||'',onChange:e=>setForm(p=>({...p,email:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Telefone')
+            ,React.createElement('input',{className:'form-input',value:form.telefone||'',onChange:e=>setForm(p=>({...p,telefone:e.target.value}))})
+          )
+        )
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Unidade')
+            ,React.createElement('select',{className:'form-input form-select',value:form.unidade_id||'',onChange:e=>setForm(p=>({...p,unidade_id:e.target.value}))}
+              ,React.createElement('option',{value:''},'Selecione...')
+              ,unidades.map(u=>React.createElement('option',{key:u.id,value:u.id},(u.bloco?'Bl.'+u.bloco+' - ':'')+u.numero))
+            )
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Tipo')
+            ,React.createElement('select',{className:'form-input form-select',value:form.tipo||'proprietario',onChange:e=>setForm(p=>({...p,tipo:e.target.value}))}
+              ,React.createElement('option',{value:'proprietario'},'Proprietário')
+              ,React.createElement('option',{value:'inquilino'},'Inquilino')
+            )
+          )
+        )
+        // Dados do proprietário (se inquilino)
+        ,(form.tipo==='inquilino')&&React.createElement('div',{style:{background:'rgba(41,128,185,0.06)',borderRadius:14,padding:'14px',marginBottom:14,border:'1px solid rgba(41,128,185,0.15)'}}
+          ,React.createElement('div',{style:{fontSize:13,fontWeight:700,color:'#1a5e8a',marginBottom:12}},'📋 Dados do Proprietário')
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Nome do Proprietário')
+            ,React.createElement('input',{className:'form-input',value:formProp.nome||'',onChange:e=>setFormProp(p=>({...p,nome:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-row'}
+            ,React.createElement('div',{className:'form-field'}
+              ,React.createElement('label',{className:'form-label'},'Telefone')
+              ,React.createElement('input',{className:'form-input',value:formProp.telefone||'',onChange:e=>setFormProp(p=>({...p,telefone:e.target.value}))})
+            )
+            ,React.createElement('div',{className:'form-field'}
+              ,React.createElement('label',{className:'form-label'},'E-mail')
+              ,React.createElement('input',{className:'form-input',type:'email',value:formProp.email||'',onChange:e=>setFormProp(p=>({...p,email:e.target.value}))})
+            )
+          )
+          ,React.createElement('label',{className:'form-check'+(formProp.whatsapp?' checked':'')}
+            ,React.createElement('input',{type:'checkbox',checked:!!formProp.whatsapp,onChange:e=>setFormProp(p=>({...p,whatsapp:e.target.checked}))})
+            ,React.createElement('span',{style:{fontSize:13,fontWeight:600}},'📱 Tem WhatsApp neste número')
+          )
+          ,React.createElement('div',{className:'form-field',style:{marginTop:12}}
+            ,React.createElement('label',{className:'form-label'},'Endereço do Proprietário')
+            ,React.createElement('input',{className:'form-input',value:formProp.endereco||'',onChange:e=>setFormProp(p=>({...p,endereco:e.target.value}))})
+          )
+        )
+        // Imobiliária
+        ,form.unidade_id&&React.createElement('div',null
+          ,React.createElement('label',{className:'form-check'+(showImob?' checked':''),style:{marginBottom:12}}
+            ,React.createElement('input',{type:'checkbox',checked:showImob,onChange:e=>setShowImob(e.target.checked)})
+            ,React.createElement('span',{style:{fontSize:13,fontWeight:600}},'🏦 Unidade gerenciada por imobiliária')
+          )
+          ,showImob&&React.createElement('div',{style:{background:'rgba(244,168,33,0.06)',borderRadius:14,padding:14,border:'1px solid rgba(244,168,33,0.2)'}}
+            ,React.createElement('div',{style:{fontSize:13,fontWeight:700,color:'#b7770a',marginBottom:12}},'🏦 Dados da Imobiliária')
+            ,React.createElement('div',{className:'form-field'}
+              ,React.createElement('label',{className:'form-label'},'Nome da Imobiliária')
+              ,React.createElement('input',{className:'form-input',value:formImob.nome||'',onChange:e=>setFormImob(p=>({...p,nome:e.target.value}))})
+            )
+            ,React.createElement('div',{className:'form-row'}
+              ,React.createElement('div',{className:'form-field'}
+                ,React.createElement('label',{className:'form-label'},'Telefone')
+                ,React.createElement('input',{className:'form-input',value:formImob.telefone||'',onChange:e=>setFormImob(p=>({...p,telefone:e.target.value}))})
+              )
+              ,React.createElement('div',{className:'form-field'}
+                ,React.createElement('label',{className:'form-label'},'WhatsApp')
+                ,React.createElement('input',{className:'form-input',value:formImob.whatsapp||'',onChange:e=>setFormImob(p=>({...p,whatsapp:e.target.value}))})
+              )
+            )
+            ,React.createElement('div',{className:'form-row'}
+              ,React.createElement('div',{className:'form-field'}
+                ,React.createElement('label',{className:'form-label'},'Site')
+                ,React.createElement('input',{className:'form-input',value:formImob.site||'',placeholder:'www.imobiliaria.com.br',onChange:e=>setFormImob(p=>({...p,site:e.target.value}))})
+              )
+              ,React.createElement('div',{className:'form-field'}
+                ,React.createElement('label',{className:'form-label'},'Unidade Ref.')
+                ,React.createElement('input',{className:'form-input',value:formImob.unidade_ref||'',onChange:e=>setFormImob(p=>({...p,unidade_ref:e.target.value}))})
+              )
+            )
+            ,React.createElement('div',{className:'form-field'}
+              ,React.createElement('label',{className:'form-label'},'Endereço da Imobiliária')
+              ,React.createElement('input',{className:'form-input',value:formImob.endereco||'',onChange:e=>setFormImob(p=>({...p,endereco:e.target.value}))})
+            )
+          )
+        )
+      )
+    )
+
+    // MODAL ÁREA
+    ,modal==='area'&&React.createElement(Modal,{title:form.id?'Editar Área':'Nova Área Comum',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveArea},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Ícone')
+          ,React.createElement('div',{style:{display:'flex',gap:8,flexWrap:'wrap',marginBottom:8}}
+            ,ICONES_AREAS.map(ic=>React.createElement('button',{key:ic,onClick:()=>setForm(p=>({...p,icone:ic})),
+                style:{width:40,height:40,borderRadius:10,border:'2px solid '+(form.icone===ic?'#0d4f4f':'#dce8e8'),
+                       background:form.icone===ic?'rgba(13,79,79,0.1)':'#f0f4f8',fontSize:20,cursor:'pointer'}},ic))
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Nome *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',placeholder:'Ex: Piscina, Salão de Festas...',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Capacidade')
+            ,React.createElement('input',{className:'form-input',type:'number',value:form.capacidade||'',onChange:e=>setForm(p=>({...p,capacidade:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Status')
+            ,React.createElement('select',{className:'form-input form-select',value:form.ativa===false?'false':'true',
+                onChange:e=>setForm(p=>({...p,ativa:e.target.value==='true'}))}
+              ,React.createElement('option',{value:'true'},'✅ Ativa')
+              ,React.createElement('option',{value:'false'},'🔴 Inativa')
+            )
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Descrição')
+          ,React.createElement('textarea',{className:'form-input form-textarea',value:form.descricao||'',onChange:e=>setForm(p=>({...p,descricao:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Regras de Utilização')
+          ,React.createElement('textarea',{className:'form-input form-textarea',rows:4,value:form.regras||'',placeholder:'Descreva as regras...',onChange:e=>setForm(p=>({...p,regras:e.target.value}))})
+        )
+      )
+    )
+
+    // MODAL PORTEIRO
+    ,modal==='porteiro'&&React.createElement(Modal,{title:'Novo Porteiro',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:savePorteiro},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Nome *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'E-mail * (login)')
+          ,React.createElement('input',{className:'form-input',type:'email',value:form.email||'',onChange:e=>setForm(p=>({...p,email:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'alert info'},'ℹ️ Crie o acesso do porteiro no Supabase Auth com este e-mail e vincule o owner_id na tabela gc_porteiros.')
+      )
+    )
+
+    // MODAL AVISO
+    ,modal==='aviso'&&React.createElement(Modal,{title:form.id?'Editar Aviso':'Novo Aviso',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveAviso},saving?'⏳...':'💾 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Tipo')
+            ,React.createElement('select',{className:'form-input form-select',value:form.tipo||'aviso',onChange:e=>setForm(p=>({...p,tipo:e.target.value}))}
+              ,React.createElement('option',{value:'aviso'},'⚠️ Aviso')
+              ,React.createElement('option',{value:'urgente'},'🚨 Urgente')
+              ,React.createElement('option',{value:'informativo'},'ℹ️ Informativo')
+              ,React.createElement('option',{value:'evento'},'🎉 Evento')
+            )
+          )
+          ,React.createElement('div',{className:'form-field',style:{display:'flex',alignItems:'flex-end'}}
+            ,React.createElement('label',{className:'form-check'+(form.fixado?' checked':''),style:{width:'100%',marginBottom:0}}
+              ,React.createElement('input',{type:'checkbox',checked:!!form.fixado,onChange:e=>setForm(p=>({...p,fixado:e.target.checked}))})
+              ,React.createElement('span',{style:{fontSize:13,fontWeight:600}},'📌 Fixar no topo')
+            )
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Título *')
+          ,React.createElement('input',{className:'form-input',value:form.titulo||'',onChange:e=>setForm(p=>({...p,titulo:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Texto *')
+          ,React.createElement('textarea',{className:'form-input form-textarea',rows:5,value:form.texto||'',onChange:e=>setForm(p=>({...p,texto:e.target.value}))})
+        )
+      )
+    )
+  );
+}
+
+// ── Morador App ───────────────────────────────────────────────────────────────
+function MoradorApp({user, morador}) {
+  const [tab,      setTab]      = useState('mural');
+  const [avisos,   setAvisos]   = useState([]);
+  const [areas,    setAreas]    = useState([]);
+  const [reservas, setReservas] = useState([]);
+  const [visitantes,setVisitantes]=useState([]);
+  const [entregas, setEntregas] = useState([]);
+  const [docs,     setDocs]     = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [modal,    setModal]    = useState(null);
+  const [form,     setForm]     = useState({});
+  const [areaVer,  setAreaVer]  = useState(null);
+  const [calMes,   setCalMes]   = useState(new Date());
+  const [calReservas,setCalReservas]=useState([]);
+  const [saving,   setSaving]   = useState(false);
+
+  const condo_id  = morador.condo_id;
+  const morador_id= morador.id;
+  const unidade_id= morador.unidade_id;
+
+  useEffect(()=>{
+    Promise.all([
+      db.getAvisos(condo_id),db.getAreas(condo_id),
+      db.getReservasByMor(morador_id),db.getVisitsByMor(morador_id),
+      db.getEntregasByMor(morador_id),db.getDocs(condo_id)
+    ]).then(([av,ar,res,vis,entr,doc])=>{
+      setAvisos(av.data||[]);setAreas((ar.data||[]).filter(a=>a.ativa));
+      setReservas(res.data||[]);setVisitantes(vis.data||[]);
+      setEntregas(entr.data||[]);setDocs(doc.data||[]);
+      setLoading(false);
+    });
+  },[]);
+
+  const abrirArea=async(area)=>{
+    setAreaVer(area);
+    const mesStr=calMes.getFullYear()+'-'+String(calMes.getMonth()+1).padStart(2,'0');
+    const {data}=await db.getReservasByArea(area.id,mesStr+'-01');
+    setCalReservas(data||[]);
+    setModal('area_cal');
+  };
+
+  const loadCalMes=async(area,mes)=>{
+    setCalMes(mes);
+    const mesStr=mes.getFullYear()+'-'+String(mes.getMonth()+1).padStart(2,'0');
+    // Load all days in month
+    const inicio=mesStr+'-01';
+    const {data}=await sb.from('gc_reservas').select('*,gc_moradores(nome)').eq('area_id',area.id)
+      .gte('data',inicio).lte('data',mesStr+'-31').neq('status','cancelada');
+    setCalReservas(data||[]);
+  };
+
+  const saveReserva=async()=>{
+    if(!form.data||!form.hora_inicio||!form.hora_fim)return;
+    setSaving(true);
+    const payload={condo_id,area_id:areaVer.id,morador_id,unidade_id:unidade_id||null,
+      data:form.data,hora_inicio:form.hora_inicio,hora_fim:form.hora_fim,obs:form.obs||null,status:'confirmada'};
+    const {data}=await db.addReserva(payload);
+    if(data){setReservas(p=>[data,...p]);}
+    setSaving(false);setModal(null);setForm({});
+  };
+
+  const saveVisitante=async()=>{
+    if(!form.nome||!form.data)return;
+    setSaving(true);
+    const reservaHoje=reservas.find(r=>r.data===form.data);
+    const payload={condo_id,unidade_id:unidade_id||null,morador_id,nome:form.nome,documento:form.documento||null,
+      data:form.data,hora_entrada:form.hora_entrada||null,hora_saida:form.hora_saida||null,
+      destino_tipo:form.destino_tipo||'unidade',area_id:form.destino_tipo==='area_comum'?form.area_id||null:null,
+      status:'esperado'};
+    const {data}=await db.addVisitante(payload);
+    if(data)setVisitantes(p=>[data,...p]);
+    setSaving(false);setModal(null);setForm({});
+  };
+
+  const saveEntrega=async()=>{
+    if(!form.tipo)return;
+    setSaving(true);
+    const payload={condo_id,unidade_id:unidade_id||null,morador_id,tipo:form.tipo,
+      fornecedor:form.fornecedor||null,data_esperada:form.data_esperada||null,
+      hora_esperada:form.hora_esperada||null,status:'esperada'};
+    const {data}=await db.addEntrega(payload);
+    if(data)setEntregas(p=>[data,...p]);
+    setSaving(false);setModal(null);setForm({});
+  };
+
+  const TIPO_CORES={aviso:'#f4a821',urgente:'#e74c3c',informativo:'#2980b9',evento:'#6c5ce7'};
+  const TIPO_DOC_ICONE={assembleia:'🗳️',ata:'📝',edital:'📣',regimento:'📋',outros:'📄'};
+
+  // Calendário
+  const CalendarView=({area})=>{
+    const ano=calMes.getFullYear(),mes=calMes.getMonth();
+    const primeiroDia=new Date(ano,mes,1).getDay();
+    const diasNoMes=new Date(ano,mes+1,0).getDate();
+    const diasReservados=new Set(calReservas.map(r=>Number(r.data.slice(8,10))));
+    const todayNum=new Date().getDate();
+    const todayMes=new Date().getMonth();
+    const todayAno=new Date().getFullYear();
+    const cells=[];
+    for(let i=0;i<primeiroDia;i++) cells.push(null);
+    for(let d=1;d<=diasNoMes;d++) cells.push(d);
+
+    return React.createElement('div',null
+      ,React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}
+        ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>{const nm=new Date(ano,mes-1,1);loadCalMes(area,nm)}},'‹')
+        ,React.createElement('span',{style:{fontWeight:700,fontSize:15}},MESES[mes]+' '+ano)
+        ,React.createElement('button',{className:'btn btn-ghost btn-sm',onClick:()=>{const nm=new Date(ano,mes+1,1);loadCalMes(area,nm)}},'›')
+      )
+      ,React.createElement('div',{className:'cal-grid'}
+        ,DIAS.map(d=>React.createElement('div',{key:d,className:'cal-head'},d))
+        ,cells.map((d,i)=>React.createElement('div',{key:i,
+            className:'cal-day'+(d===null?' empty':'')+(d&&diasReservados.has(d)?' reservado':'')+(d&&d===todayNum&&mes===todayMes&&ano===todayAno?' today':''),
+            onClick:()=>{if(d&&!diasReservados.has(d)){
+              const ds=ano+'-'+String(mes+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+              setForm({data:ds,destino_tipo:'area_comum',area_id:area.id});setModal('reserva');
+            }}}
+          ,d||''))
+      )
+      ,React.createElement('div',{style:{display:'flex',gap:12,marginTop:12,fontSize:12}}
+        ,React.createElement('span',null,'⬜ Disponível')
+        ,React.createElement('span',{style:{color:'#e74c3c'}},'🟥 Reservado')
+        ,React.createElement('span',{style:{color:'#00b894'}},'🟦 Hoje')
+      )
+      // Reservas do mês
+      ,calReservas.length>0&&React.createElement('div',{style:{marginTop:16}}
+        ,React.createElement('div',{style:{fontSize:12,fontWeight:700,color:'#6b7f8e',textTransform:'uppercase',letterSpacing:1,marginBottom:8}},'Reservas do período')
+        ,calReservas.map(r=>React.createElement('div',{key:r.id,style:{
+              background:'rgba(231,76,60,0.08)',border:'1px solid rgba(231,76,60,0.2)',
+              borderRadius:10,padding:'8px 12px',marginBottom:6}}
+          ,React.createElement('div',{style:{fontWeight:600,fontSize:13}},fmtDate(r.data),' · ',r.hora_inicio,'–',r.hora_fim)
+          ,React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},r.gc_moradores?.nome)
+        ))
+      )
+    );
+  };
+
+  if(loading)return React.createElement('div',{className:'spinner'},'⏳ Carregando...');
+
+  const hoje=new Date();
+  const saudacao=greet();
+  const nomeFirst=(morador.nome||'').split(' ')[0];
+  const dtFmt=DIAS[hoje.getDay()]+', '+hoje.getDate()+' de '+MESES[hoje.getMonth()]+' de '+hoje.getFullYear();
+
+  const NAV=[
+    {id:'mural',icon:'📋',label:'Mural'},
+    {id:'porteiro',icon:'🔔',label:'Porteiro'},
+    {id:'reservas',icon:'📅',label:'Reservas'},
+    {id:'entregas',icon:'📦',label:'Entregas'},
+    {id:'docs',icon:'📁',label:'Docs'},
+    {id:'cadastro',icon:'👤',label:'Perfil'},
+  ];
+
+  return React.createElement('div',{className:'app'}
+    ,React.createElement('div',{className:'header'}
+      ,React.createElement('div',{className:'header-inner'}
+        ,React.createElement('div',{className:'header-left'}
+          ,React.createElement('div',{className:'header-avatar',style:{background:'rgba(108,92,231,0.15)',color:'#6c5ce7'}},'🏠')
+          ,React.createElement('div',null
+            ,React.createElement('div',{className:'header-name'},morador.nome)
+            ,React.createElement('div',{className:'header-role'},'Morador · '+(morador.gc_unidades?'Unid. '+morador.gc_unidades.numero:''))
+          )
+        )
+        ,React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}}
+          ,React.createElement('span',{className:'header-condo'},morador.gc_condominios?.nome||'')
+          ,React.createElement('button',{className:'btn-logout',onClick:()=>sb.auth.signOut()},'🚪')
+        )
+      )
+    )
+
+    ,React.createElement('div',{className:'content'}
+      // MURAL
+      ,tab==='mural'&&React.createElement('div',null
+        ,React.createElement('div',{className:'greeting-card'}
+          ,React.createElement('div',{className:'greeting-date'},dtFmt)
+          ,React.createElement('div',{className:'greeting-name'},saudacao+', '+nomeFirst+'!')
+          ,React.createElement('div',{className:'greeting-condo'},morador.gc_condominios?.nome||'')
+          ,React.createElement('div',{className:'greeting-badge'},'📬 '+avisos.length+' aviso(s) no mural')
+        )
+        ,avisos.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'📭')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum aviso no momento')
+          ,React.createElement('div',{className:'empty-sub'},'O síndico não publicou avisos recentes')
+        )
+        ,avisos.map(av=>React.createElement('div',{key:av.id,className:'aviso-card '+av.tipo}
+          ,React.createElement('div',{className:'aviso-tipo',style:{color:TIPO_CORES[av.tipo]||'#666'}}
+            ,av.fixado?'📌 ':'',{aviso:'⚠️ AVISO',urgente:'🚨 URGENTE',informativo:'ℹ️ INFORMATIVO',evento:'🎉 EVENTO'}[av.tipo])
+          ,React.createElement('div',{className:'aviso-titulo'},av.titulo)
+          ,React.createElement('div',{className:'aviso-texto'},av.texto)
+          ,React.createElement('div',{className:'aviso-data'},fmtDate(av.created_at?.slice(0,10)))
+        ))
+      )
+
+      // PORTEIRO ONLINE
+      ,tab==='porteiro'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Porteiro Online')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({data:today(),destino_tipo:'unidade'});setModal('visitante');}},'+ Informar')
+        )
+        ,React.createElement('div',{className:'alert info'},'🔔 Informe com antecedência os visitantes esperados para facilitar a entrada.')
+        ,visitantes.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🔔')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum visitante informado')
+        )
+        ,visitantes.map(v=>React.createElement('div',{key:v.id,className:'card card-accent'}
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},v.nome)
+              ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginTop:3}},fmtDate(v.data),' · ',(v.hora_entrada||'')+(v.hora_saida?' – '+v.hora_saida:''))
+              ,React.createElement('div',{style:{fontSize:12,color:'#6b7f8e',marginTop:2}},
+                  v.destino_tipo==='area_comum'?'📍 Área comum':'🏠 Unidade',
+                  v.documento?' · '+v.documento:'')
+            )
+            ,React.createElement('span',{className:'badge '+({esperado:'badge-gold',chegou:'badge-green',saiu:'badge-gray',cancelado:'badge-red'}[v.status]||'badge-gray')},
+                {esperado:'Esperado',chegou:'Chegou',saiu:'Saiu',cancelado:'Cancelado'}[v.status]||v.status)
+          )
+        ))
+      )
+
+      // RESERVAS
+      ,tab==='reservas'&&React.createElement('div',null
+        ,React.createElement('div',{className:'screen-title'},'Reservar Área')
+        ,React.createElement('p',{className:'screen-sub'},'Clique em uma área para ver disponibilidade')
+        ,areas.map(a=>React.createElement('div',{key:a.id,className:'list-item',onClick:()=>abrirArea(a)}
+          ,React.createElement('div',{className:'list-icon',style:{background:'rgba(0,184,148,0.1)',fontSize:24}},a.icone)
+          ,React.createElement('div',{className:'list-info'}
+            ,React.createElement('div',{className:'list-title'},a.nome)
+            ,React.createElement('div',{className:'list-sub'},a.capacidade?'Até '+a.capacidade+' pessoas':'',a.descricao?' · '+a.descricao.slice(0,40):'')
+          )
+          ,React.createElement('div',{style:{fontSize:20,color:'#6b7f8e'}},'›')
+        ))
+        ,areas.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🏊')
+          ,React.createElement('div',{className:'empty-title'},'Nenhuma área disponível')
+        )
+        ,reservas.length>0&&React.createElement('div',{style:{marginTop:20}}
+          ,React.createElement('div',{className:'card-title',style:{marginBottom:12}},'📅 Minhas Reservas')
+          ,reservas.filter(r=>r.status==='confirmada').map(r=>React.createElement('div',{key:r.id,className:'card card-accent'}
+            ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between'}}
+              ,React.createElement('div',null
+                ,React.createElement('div',{style:{fontWeight:700}},r.gc_areas_comuns?.nome)
+                ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e'}},fmtDate(r.data),' · ',r.hora_inicio,'–',r.hora_fim)
+              )
+              ,React.createElement('button',{className:'btn btn-danger btn-sm',
+                  onClick:()=>{if(confirm('Cancelar reserva?'))db.updReserva(r.id,{status:'cancelada'}).then(()=>setReservas(p=>p.map(x=>x.id===r.id?{...x,status:'cancelada'}:x)))}},'Cancelar')
+            )
+          ))
+        )
+      )
+
+      // ENTREGAS
+      ,tab==='entregas'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Entregas')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({tipo:'encomenda'});setModal('entrega');}},'+ Nova')
+        )
+        ,entregas.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'📦')
+          ,React.createElement('div',{className:'empty-title'},'Nenhuma entrega cadastrada')
+        )
+        ,entregas.map(e=>React.createElement('div',{key:e.id,className:'card card-gold'}
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},{encomenda:'📦 Encomenda',delivery:'🍕 Delivery',correspondencia:'✉️ Correspondência'}[e.tipo]||e.tipo)
+              ,e.fornecedor&&React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginTop:3}},e.fornecedor)
+              ,e.data_esperada&&React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},fmtDate(e.data_esperada),(e.hora_esperada?' às '+e.hora_esperada:''))
+            )
+            ,React.createElement('span',{className:'badge '+({esperada:'badge-gold',recebida:'badge-blue',entregue:'badge-green',nao_entregue:'badge-red'}[e.status]||'badge-gray')},
+              {esperada:'Esperada',recebida:'Na portaria',entregue:'Entregue',nao_entregue:'Não entregue'}[e.status]||e.status)
+          )
+        ))
+      )
+
+      // DOCUMENTOS
+      ,tab==='docs'&&React.createElement('div',null
+        ,React.createElement('div',{className:'screen-title'},'Documentos')
+        ,docs.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'📁')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum documento disponível')
+        )
+        ,['assembleia','ata','edital','regimento','outros'].map(tipo=>{
+          const lista=docs.filter(d=>d.tipo===tipo);
+          if(!lista.length)return null;
+          return React.createElement('div',{key:tipo}
+            ,React.createElement('div',{className:'card-title',style:{marginBottom:8,marginTop:16}},
+                TIPO_DOC_ICONE[tipo]+' '+tipo.charAt(0).toUpperCase()+tipo.slice(1))
+            ,lista.map(d=>React.createElement('a',{key:d.id,href:d.url,target:'_blank',
+                style:{textDecoration:'none'}}
+              ,React.createElement('div',{className:'list-item'}
+                ,React.createElement('div',{className:'list-icon',style:{background:'rgba(41,128,185,0.1)'}},TIPO_DOC_ICONE[tipo])
+                ,React.createElement('div',{className:'list-info'}
+                  ,React.createElement('div',{className:'list-title'},d.titulo)
+                  ,React.createElement('div',{className:'list-sub'},fmtDate(d.created_at?.slice(0,10)))
+                )
+                ,React.createElement('div',{style:{fontSize:18}},'↗️')
+              )
+            ))
+          );
+        })
+      )
+
+      // CADASTRO
+      ,tab==='cadastro'&&React.createElement('div',null
+        ,React.createElement('div',{className:'screen-title'},'Meu Cadastro')
+        ,React.createElement('div',{className:'card'}
+          ,React.createElement('div',{style:{display:'flex',gap:16,alignItems:'center',marginBottom:20}}
+            ,React.createElement('div',{style:{width:60,height:60,borderRadius:18,background:'rgba(108,92,231,0.15)',
+                display:'flex',alignItems:'center',justifyContent:'center',fontSize:28}},'👤')
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontSize:18,fontWeight:800,color:'#1a2e3b'}},morador.nome)
+              ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e'}},morador.gc_condominios?.nome)
+            )
+          )
+          ,[['🏠 Unidade',morador.gc_unidades?(morador.gc_unidades.bloco?'Bl.'+morador.gc_unidades.bloco+' - ':'')+'Unid. '+morador.gc_unidades.numero:'—'],
+            ['📱 Telefone',morador.telefone||'—'],['✉️ E-mail',morador.email||'—'],
+            ['👤 Tipo',morador.tipo==='inquilino'?'Inquilino':'Proprietário']
+          ].map(([l,v])=>React.createElement('div',{key:l,style:{display:'flex',justifyContent:'space-between',
+                padding:'10px 0',borderTop:'1px solid #f0f4f8'}}
+            ,React.createElement('span',{style:{fontSize:13,color:'#6b7f8e'}},l)
+            ,React.createElement('span',{style:{fontSize:13,fontWeight:600}},v)
+          ))
+        )
+        ,React.createElement('div',{className:'card'}
+          ,React.createElement('div',{className:'card-title'},'Acesso ao sistema')
+          ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginBottom:12}},user.email)
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',
+              onClick:()=>{sb.auth.signOut()}},'🚪 Sair do sistema')
+        )
+      )
+    )
+
+    // Bottom Nav
+    ,React.createElement('nav',{className:'bottom-nav'}
+      ,NAV.map(n=>React.createElement('button',{key:n.id,className:'nav-item'+(tab===n.id?' active':''),onClick:()=>setTab(n.id)}
+        ,React.createElement('span',{className:'nav-icon'},n.icon)
+        ,React.createElement('span',{className:'nav-label'},n.label)
+        ,tab===n.id&&React.createElement('span',{className:'nav-dot'})
+      ))
+    )
+
+    // Modal área calendário
+    ,modal==='area_cal'&&areaVer&&React.createElement(Modal,{
+        title:areaVer.icone+' '+areaVer.nome,onClose:()=>{setModal(null);setAreaVer(null);},
+        footer:React.createElement('div',{style:{fontSize:12,color:'#6b7f8e',textAlign:'center',width:'100%'}},
+            'Clique em um dia disponível para reservar')}
+      ,React.createElement('div',null
+        ,areaVer.regras&&React.createElement('div',{className:'alert info',style:{marginBottom:16}}
+          ,'📋 '+areaVer.regras)
+        ,React.createElement(CalendarView,{area:areaVer})
+      )
+    )
+
+    // Modal nova reserva
+    ,modal==='reserva'&&React.createElement(Modal,{title:'Nova Reserva',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-accent btn-full',onClick:saveReserva},saving?'⏳...':'✅ Confirmar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'alert success'},'📅 '+fmtDate(form.data)+' — '+(areaVer?.nome||''))
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Horário início *')
+            ,React.createElement('input',{className:'form-input',type:'time',value:form.hora_inicio||'',onChange:e=>setForm(p=>({...p,hora_inicio:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Horário fim *')
+            ,React.createElement('input',{className:'form-input',type:'time',value:form.hora_fim||'',onChange:e=>setForm(p=>({...p,hora_fim:e.target.value}))})
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Observação')
+          ,React.createElement('textarea',{className:'form-input form-textarea',value:form.obs||'',onChange:e=>setForm(p=>({...p,obs:e.target.value}))})
+        )
+      )
+    )
+
+    // Modal visitante
+    ,modal==='visitante'&&React.createElement(Modal,{title:'Informar Visitante',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveVisitante},saving?'⏳...':'🔔 Confirmar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Nome do Visitante *')
+          ,React.createElement('input',{className:'form-input',value:form.nome||'',onChange:e=>setForm(p=>({...p,nome:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'RG ou CPF (opcional)')
+          ,React.createElement('input',{className:'form-input',value:form.documento||'',onChange:e=>setForm(p=>({...p,documento:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Data *')
+            ,React.createElement('input',{className:'form-input',type:'date',value:form.data||'',onChange:e=>setForm(p=>({...p,data:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Hora prevista')
+            ,React.createElement('input',{className:'form-input',type:'time',value:form.hora_entrada||'',onChange:e=>setForm(p=>({...p,hora_entrada:e.target.value}))})
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Destino')
+          ,React.createElement('div',{className:'toggle-group'}
+            ,React.createElement('button',{className:'toggle-opt'+(form.destino_tipo==='unidade'?' active':''),onClick:()=>setForm(p=>({...p,destino_tipo:'unidade'}))},'🏠 Minha Unidade')
+            ,React.createElement('button',{className:'toggle-opt'+(form.destino_tipo==='area_comum'?' active':''),onClick:()=>setForm(p=>({...p,destino_tipo:'area_comum'}))},'🏊 Área Comum')
+          )
+        )
+        ,form.destino_tipo==='area_comum'&&React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Qual área?')
+          ,reservas.filter(r=>r.data===form.data&&r.status==='confirmada').length>0
+            ?React.createElement('select',{className:'form-input form-select',value:form.area_id||'',onChange:e=>setForm(p=>({...p,area_id:e.target.value}))}
+              ,React.createElement('option',{value:''},'Selecione...')
+              ,reservas.filter(r=>r.data===form.data&&r.status==='confirmada').map(r=>
+                React.createElement('option',{key:r.id,value:r.area_id},r.gc_areas_comuns?.nome+' ('+r.hora_inicio+'–'+r.hora_fim+')')
+              )
+            )
+            :React.createElement('select',{className:'form-input form-select',value:form.area_id||'',onChange:e=>setForm(p=>({...p,area_id:e.target.value}))}
+              ,React.createElement('option',{value:''},'Selecione...')
+              ,areas.map(a=>React.createElement('option',{key:a.id,value:a.id},a.icone+' '+a.nome))
+            )
+        )
+      )
+    )
+
+    // Modal entrega
+    ,modal==='entrega'&&React.createElement(Modal,{title:'Cadastrar Entrega Esperada',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveEntrega},saving?'⏳...':'📦 Salvar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Tipo *')
+          ,React.createElement('div',{className:'toggle-group'}
+            ,React.createElement('button',{className:'toggle-opt'+(form.tipo==='encomenda'?' active':''),onClick:()=>setForm(p=>({...p,tipo:'encomenda'}))},'📦 Encomenda')
+            ,React.createElement('button',{className:'toggle-opt'+(form.tipo==='delivery'?' active':''),onClick:()=>setForm(p=>({...p,tipo:'delivery'}))},'🍕 Delivery')
+            ,React.createElement('button',{className:'toggle-opt'+(form.tipo==='correspondencia'?' active':''),onClick:()=>setForm(p=>({...p,tipo:'correspondencia'}))},'✉️ Carta')
+          )
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Fornecedor / Origem')
+          ,React.createElement('input',{className:'form-input',value:form.fornecedor||'',placeholder:'Ex: Amazon, iFood, Correios...',onChange:e=>setForm(p=>({...p,fornecedor:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-row'}
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Data esperada')
+            ,React.createElement('input',{className:'form-input',type:'date',value:form.data_esperada||'',onChange:e=>setForm(p=>({...p,data_esperada:e.target.value}))})
+          )
+          ,React.createElement('div',{className:'form-field'}
+            ,React.createElement('label',{className:'form-label'},'Horário')
+            ,React.createElement('input',{className:'form-input',type:'time',value:form.hora_esperada||'',onChange:e=>setForm(p=>({...p,hora_esperada:e.target.value}))})
+          )
+        )
+      )
+    )
+  );
+}
+
+// ── Porteiro App ──────────────────────────────────────────────────────────────
+function PorteiroApp({user, porteiro}) {
+  const [tab,       setTab]       = useState('visitantes');
+  const [visitantes,setVisitantes]= useState([]);
+  const [entregas,  setEntregas]  = useState([]);
+  const [achados,   setAchados]   = useState([]);
+  const [loading,   setLoading]   = useState(true);
+  const [modal,     setModal]     = useState(null);
+  const [form,      setForm]      = useState({});
+  const [saving,    setSaving]    = useState(false);
+  const [dataFiltro,setDataFiltro]= useState(today());
+
+  const condo_id=porteiro.condo_id;
+
+  useEffect(()=>{ loadAll(); },[]);
+
+  const loadAll=async()=>{
+    setLoading(true);
+    const [v,e,a]=await Promise.all([
+      db.getVisitantes(condo_id,dataFiltro),
+      db.getEntregas(condo_id),
+      db.getAchados(condo_id)
+    ]);
+    setVisitantes(v.data||[]);setEntregas(e.data||[]);setAchados(a.data||[]);
+    setLoading(false);
+  };
+
+  useEffect(()=>{
+    if(!loading) db.getVisitantes(condo_id,dataFiltro).then(({data})=>setVisitantes(data||[]));
+  },[dataFiltro]);
+
+  const darBaixaEntrega=async(e)=>{
+    const {data}=await db.updEntrega(e.id,{status:'entregue',data_entregue:new Date().toISOString()});
+    if(data)setEntregas(p=>p.map(x=>x.id===e.id?data:x));
+  };
+
+  const marcarChegou=async(v)=>{
+    const {data}=await db.updVisitante(v.id,{status:'chegou',hora_entrada:nowTime()});
+    if(data)setVisitantes(p=>p.map(x=>x.id===v.id?data:x));
+  };
+
+  const marcarSaiu=async(v)=>{
+    const {data}=await db.updVisitante(v.id,{status:'saiu',hora_saida:nowTime()});
+    if(data)setVisitantes(p=>p.map(x=>x.id===v.id?data:x));
+  };
+
+  const saveAchado=async()=>{
+    if(!form.descricao)return;
+    setSaving(true);
+    const {data}=await db.addAchado({condo_id,porteiro_id:porteiro.id,descricao:form.descricao,
+      local:form.local||null,data_achado:today(),status:'guardado'});
+    if(data)setAchados(p=>[data,...p]);
+    setSaving(false);setModal(null);setForm({});
+  };
+
+  const VISIT_STATUS={esperado:{badge:'badge-gold',txt:'Esperado'},chegou:{badge:'badge-green',txt:'Chegou'},saiu:{badge:'badge-gray',txt:'Saiu'},cancelado:{badge:'badge-red',txt:'Cancelado'}};
+
+  if(loading)return React.createElement('div',{className:'spinner'},'⏳ Carregando...');
+
+  const NAV=[
+    {id:'visitantes',icon:'🚶',label:'Visitantes'},
+    {id:'entregas',icon:'📦',label:'Entregas'},
+    {id:'achados',icon:'🔍',label:'Achados'},
+  ];
+
+  const entregasPendentes=entregas.filter(e=>e.status==='esperada'||e.status==='recebida');
+
+  return React.createElement('div',{className:'app'}
+    ,React.createElement('div',{className:'header'}
+      ,React.createElement('div',{className:'header-inner'}
+        ,React.createElement('div',{className:'header-left'}
+          ,React.createElement('div',{className:'header-avatar',style:{background:'rgba(244,168,33,0.15)',color:'#f4a821'}},'👮')
+          ,React.createElement('div',null
+            ,React.createElement('div',{className:'header-name'},porteiro.nome)
+            ,React.createElement('div',{className:'header-role'},'Porteiro')
+          )
+        )
+        ,React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}}
+          ,React.createElement('span',{className:'header-condo'},porteiro.gc_condominios?.nome||'')
+          ,React.createElement('button',{className:'btn-logout',onClick:()=>sb.auth.signOut()},'🚪')
+        )
+      )
+    )
+
+    ,React.createElement('div',{className:'content'}
+      // VISITANTES
+      ,tab==='visitantes'&&React.createElement('div',null
+        ,React.createElement('div',{style:{display:'flex',alignItems:'center',gap:10,marginBottom:16}}
+          ,React.createElement('span',{className:'screen-title'},'Visitantes')
+          ,React.createElement('input',{type:'date',value:dataFiltro,
+              onChange:e=>setDataFiltro(e.target.value),
+              style:{marginLeft:'auto',padding:'6px 10px',borderRadius:10,border:'1.5px solid #dce8e8',fontSize:13,fontFamily:'DM Sans,sans-serif'}})
+        )
+        ,visitantes.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🚶')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum visitante para este dia')
+        )
+        ,visitantes.map(v=>React.createElement('div',{key:v.id,className:'card '+(v.status==='chegou'?'card-accent':v.status==='saiu'?'':'card-gold')}
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},v.nome)
+              ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginTop:2}}
+                ,v.gc_moradores?.nome,' · '
+                ,v.destino_tipo==='area_comum'?'Área: '+(v.gc_areas_comuns?.nome||''):'Unid. '+(v.gc_unidades?.numero||'')
+              )
+              ,v.documento&&React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},'Doc: '+v.documento)
+              ,React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}}
+                ,v.hora_entrada?'Entrada: '+v.hora_entrada:'Prev.: '+(v.hora_entrada||'—')
+                ,v.hora_saida?' | Saída: '+v.hora_saida:'')
+            )
+            ,React.createElement('span',{className:'badge '+(VISIT_STATUS[v.status]?.badge||'badge-gray')},VISIT_STATUS[v.status]?.txt||v.status)
+          )
+          ,v.status==='esperado'&&React.createElement('button',{className:'btn btn-accent btn-sm btn-full',onClick:()=>marcarChegou(v)},'✅ Marcar como chegou')
+          ,v.status==='chegou'&&React.createElement('button',{className:'btn btn-ghost btn-sm btn-full',onClick:()=>marcarSaiu(v)},'🚪 Marcar como saiu')
+        ))
+      )
+
+      // ENTREGAS
+      ,tab==='entregas'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Entregas e Encomendas')
+        )
+        ,React.createElement('div',{className:'tab-bar'}
+          ,React.createElement('button',{className:'tab-btn active'},'📦 Pendentes ('+entregasPendentes.length+')')
+        )
+        ,entregasPendentes.length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'📦')
+          ,React.createElement('div',{className:'empty-title'},'Nenhuma entrega pendente')
+        )
+        ,entregasPendentes.map(e=>React.createElement('div',{key:e.id,className:'card card-gold'}
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},{encomenda:'📦',delivery:'🍕',correspondencia:'✉️'}[e.tipo]||'📦'+' '+(e.fornecedor||e.tipo))
+              ,React.createElement('div',{style:{fontSize:13,color:'#6b7f8e',marginTop:2}}
+                ,e.gc_moradores?.nome,' · Unid. ',e.gc_unidades?.numero)
+              ,e.data_esperada&&React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},fmtDate(e.data_esperada),(e.hora_esperada?' às '+e.hora_esperada:''))
+            )
+            ,React.createElement('span',{className:'badge '+({esperada:'badge-gold',recebida:'badge-blue'}[e.status]||'badge-gray')},
+              {esperada:'Esperada',recebida:'Na portaria'}[e.status]||e.status)
+          )
+          ,e.status==='esperada'&&React.createElement('button',{className:'btn btn-accent btn-sm btn-full',
+              onClick:()=>db.updEntrega(e.id,{status:'recebida',data_recebida:new Date().toISOString()}).then(({data})=>{if(data)setEntregas(p=>p.map(x=>x.id===e.id?data:x))})}
+            ,'📥 Marcar como recebida na portaria')
+          ,e.status==='recebida'&&React.createElement('button',{className:'btn btn-primary btn-sm btn-full',onClick:()=>darBaixaEntrega(e)},'✅ Entregue ao morador')
+        ))
+      )
+
+      // ACHADOS E PERDIDOS
+      ,tab==='achados'&&React.createElement('div',null
+        ,React.createElement('div',{className:'section-header'}
+          ,React.createElement('span',{className:'screen-title'},'Achados e Perdidos')
+          ,React.createElement('button',{className:'btn btn-primary btn-sm',onClick:()=>{setForm({});setModal('achado');}},'+ Registrar')
+        )
+        ,achados.filter(a=>a.status==='guardado').length===0&&React.createElement('div',{className:'empty'}
+          ,React.createElement('div',{className:'empty-icon'},'🔍')
+          ,React.createElement('div',{className:'empty-title'},'Nenhum item guardado')
+        )
+        ,achados.filter(a=>a.status==='guardado').map(a=>React.createElement('div',{key:a.id,className:'card card-purple'}
+          ,React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}
+            ,React.createElement('div',null
+              ,React.createElement('div',{style:{fontWeight:700,fontSize:15}},a.descricao)
+              ,a.local&&React.createElement('div',{style:{fontSize:13,color:'#6b7f8e'}},'📍 '+a.local)
+              ,React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},'Achado em: '+fmtDate(a.data_achado))
+              ,a.gc_porteiros&&React.createElement('div',{style:{fontSize:12,color:'#6b7f8e'}},'Porteiro: '+a.gc_porteiros.nome)
+            )
+          )
+          ,React.createElement('div',{style:{display:'flex',gap:8,marginTop:8}}
+            ,React.createElement('button',{className:'btn btn-accent btn-sm',
+                onClick:()=>{const dev=prompt('Devolvido a (nome do morador):');if(dev)db.updAchado(a.id,{status:'devolvido',devolvido_a:dev}).then(()=>setAchados(p=>p.map(x=>x.id===a.id?{...x,status:'devolvido'}:x)))}},'✅ Devolvido')
+            ,React.createElement('button',{className:'btn btn-ghost btn-sm',
+                onClick:()=>{if(confirm('Descartar item?'))db.updAchado(a.id,{status:'descartado'}).then(()=>setAchados(p=>p.map(x=>x.id===a.id?{...x,status:'descartado'}:x)))}},'🗑️ Descartar')
+          )
+        ))
+      )
+    )
+
+    ,React.createElement('nav',{className:'bottom-nav'}
+      ,NAV.map(n=>React.createElement('button',{key:n.id,className:'nav-item'+(tab===n.id?' active':''),onClick:()=>setTab(n.id)}
+        ,React.createElement('span',{className:'nav-icon'},n.icon)
+        ,React.createElement('span',{className:'nav-label'},n.label)
+        ,tab===n.id&&React.createElement('span',{className:'nav-dot'})
+      ))
+    )
+
+    ,modal==='achado'&&React.createElement(Modal,{title:'Registrar Item Achado',onClose:()=>setModal(null),
+        footer:React.createElement('div',{style:{display:'flex',gap:10,width:'100%'}}
+          ,React.createElement('button',{className:'btn btn-ghost btn-full',onClick:()=>setModal(null)},'Cancelar')
+          ,React.createElement('button',{className:'btn btn-primary btn-full',onClick:saveAchado},saving?'⏳...':'💾 Registrar')
+        )}
+      ,React.createElement('div',null
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Descrição do item *')
+          ,React.createElement('input',{className:'form-input',value:form.descricao||'',placeholder:'Ex: Guarda-chuva azul, chave...',onChange:e=>setForm(p=>({...p,descricao:e.target.value}))})
+        )
+        ,React.createElement('div',{className:'form-field'}
+          ,React.createElement('label',{className:'form-label'},'Local onde foi achado')
+          ,React.createElement('input',{className:'form-input',value:form.local||'',placeholder:'Ex: Piscina, Elevador, Estacionamento...',onChange:e=>setForm(p=>({...p,local:e.target.value}))})
+        )
+      )
+    )
+  );
+}
+
+// ── Root App ──────────────────────────────────────────────────────────────────
+function App() {
+  const [user,    setUser]    = useState(null);
+  const [role,    setRole]    = useState(null); // admin | sindico | morador | porteiro
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isRecovery, setIsRecovery] = useState(false);
+
+  const detectRole = async(u) => {
+    if(u.email === ADMIN_EMAIL){ setRole('admin'); setProfile(null); return; }
+    // Check sindico
+    const {data:sind} = await db.getMySindico(u.id);
+    if(sind){ setRole('sindico'); setProfile(sind); return; }
+    // Check morador
+    const {data:mor} = await db.getMyMorador(u.id);
+    if(mor){ setRole('morador'); setProfile(mor); return; }
+    // Check porteiro
+    const {data:port} = await db.getMyPorteiro(u.id);
+    if(port){ setRole('porteiro'); setProfile(port); return; }
+    // Unknown
+    setRole('unknown');
+  };
+
+  useEffect(()=>{
+    const {data:{subscription}} = sb.auth.onAuthStateChange(async(event,session)=>{
+      if(event==='PASSWORD_RECOVERY'){setIsRecovery(true);setLoading(false);return;}
+      if(session?.user){
+        setUser(session.user);
+        await detectRole(session.user);
+      } else {
+        setUser(null);setRole(null);setProfile(null);
+      }
+      setLoading(false);
+    });
+    sb.auth.getSession().then(({data:{session}})=>{
+      if(!session){setLoading(false);}
+    });
+    return ()=>subscription.unsubscribe();
+  },[]);
+
+  if(loading) return React.createElement('div',{className:'login-bg',style:{justifyContent:'center',alignItems:'center'}}
+    ,React.createElement('div',{style:{textAlign:'center',color:'rgba(255,255,255,0.7)'}}
+      ,React.createElement('div',{style:{fontSize:48,marginBottom:12}},'🏢')
+      ,React.createElement('div',{style:{fontSize:14}},'Carregando...')
+    )
+  );
+
+  if(isRecovery) return React.createElement('div',{className:'login-bg'}
+    ,React.createElement('div',{className:'login-card'}
+      ,React.createElement('div',{className:'login-logo'},'🔑')
+      ,React.createElement('h1',{className:'login-title'},'Redefinir Senha')
+      ,React.createElement(RedefinirSenha,{onConcluido:()=>{setIsRecovery(false);window.history.replaceState(null,'',window.location.pathname);}})
+    )
+  );
+
+  if(!user) return React.createElement(LoginScreen,{onLogin:async(u)=>{setUser(u);await detectRole(u);}});
+
+  if(role==='admin')    return React.createElement(AdminApp,  {user});
+  if(role==='sindico')  return React.createElement(SindicoApp,{user,sindico:profile});
+  if(role==='morador')  return React.createElement(MoradorApp,{user,morador:profile});
+  if(role==='porteiro') return React.createElement(PorteiroApp,{user,porteiro:profile});
+
+  return React.createElement('div',{className:'login-bg'}
+    ,React.createElement('div',{className:'login-card'}
+      ,React.createElement('div',{className:'login-logo'},'⚠️')
+      ,React.createElement('h1',{className:'login-title',style:{fontSize:18}},'Acesso não configurado')
+      ,React.createElement('p',{style:{color:'rgba(255,255,255,0.6)',textAlign:'center',fontSize:13,marginTop:8}}
+        ,'Seu e-mail está autenticado mas não há um perfil vinculado. Contate o administrador.')
+      ,React.createElement('button',{className:'btn-login',style:{marginTop:20},onClick:()=>sb.auth.signOut()},'Sair')
+    )
+  );
+}
+
+// RedefinirSenha component
+function RedefinirSenha({onConcluido}) {
+  const [senha,   setSenha]   = useState('');
+  const [conf,    setConf]    = useState('');
+  const [loading, setLoading] = useState(false);
+  const [msg,     setMsg]     = useState(null);
+  const [ok,      setOk]      = useState(false);
+
+  const salvar = async() => {
+    if(!senha||senha.length<6) return setMsg({t:'Mínimo 6 caracteres.',e:true});
+    if(senha!==conf) return setMsg({t:'Senhas não conferem.',e:true});
+    setLoading(true);
+    const {error}=await sb.auth.updateUser({password:senha});
+    if(error) setMsg({t:'Erro: '+error.message,e:true});
+    else{setOk(true);setMsg({t:'Senha redefinida com sucesso!',e:false});}
+    setLoading(false);
+  };
+
+  if(ok) return React.createElement('div',{style:{textAlign:'center'}}
+    ,React.createElement('p',{style:{fontSize:40,margin:'16px 0'}},'✅')
+    ,React.createElement('button',{className:'btn-login',onClick:onConcluido},'→ Ir para o Login')
+  );
+
+  return React.createElement('div',null
+    ,msg&&React.createElement('div',{className:'login-alert '+(msg.e?'err':'ok')},msg.t)
+    ,React.createElement('div',{className:'login-field'}
+      ,React.createElement('label',null,'Nova Senha')
+      ,React.createElement('input',{type:'password',placeholder:'Mínimo 6 caracteres',value:senha,onChange:e=>setSenha(e.target.value)})
+    )
+    ,React.createElement('div',{className:'login-field'}
+      ,React.createElement('label',null,'Confirmar Senha')
+      ,React.createElement('input',{type:'password',placeholder:'Repita a senha',value:conf,onChange:e=>setConf(e.target.value),onKeyDown:e=>e.key==='Enter'&&salvar()})
+    )
+    ,React.createElement('button',{className:'btn-login',disabled:loading,onClick:salvar},loading?'Salvando...':'🔑 Redefinir Senha')
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
